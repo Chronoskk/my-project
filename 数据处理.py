@@ -32,36 +32,39 @@ print()
 print("幅值融合矩阵：")
 print(np.round(B_sum,3))
 
-plt.figure(figsize=(6,5))
-plt.imshow(Bx,
-           cmap='jet',
-           origin='lower')
-plt.colorbar(label='Magnetic Flux Density (mT)')
-plt.title('X Direction Leakage Magnetic Field')
-plt.xlabel('X Position')
-plt.ylabel('Y Position')
-plt.show()
-plt.figure(figsize=(6,5))
-plt.imshow(B_max,
-           cmap='jet',
-           origin='lower')
+def plot_contour_field(data,title,levels=12):
+    x_axis = np.arange(data.shape[1])
+    y_axis = np.arange(data.shape[0])
+    X,Y = np.meshgrid(x_axis,y_axis)
 
-plt.colorbar(label='Magnetic Flux Density (mT)')
-plt.title('Maximum Fusion Leakage Magnetic Field')
-plt.xlabel('X Position')
-plt.ylabel('Y Position')
-plt.show()
-plt.figure(figsize=(6,5))
+    plt.figure(figsize=(6,5))
+    filled = plt.contourf(
+        X,
+        Y,
+        data,
+        levels=levels,
+        cmap='jet'
+    )
+    lines = plt.contour(
+        X,
+        Y,
+        data,
+        levels=levels,
+        colors='black',
+        linewidths=0.6
+    )
+    plt.clabel(lines,inline=True,fontsize=8,fmt='%.2f')
+    plt.colorbar(filled,label='Magnetic Flux Density (mT)')
+    plt.title(title)
+    plt.xlabel('X Position')
+    plt.ylabel('Y Position')
+    plt.axis('equal')
+    plt.tight_layout()
+    plt.show()
 
-plt.imshow(B_sum,
-           cmap='jet',
-           origin='lower')
-
-plt.colorbar(label='Magnetic Flux Density (mT)')
-plt.title('Magnitude Fusion Leakage Magnetic Field')
-plt.xlabel('X Position')
-plt.ylabel('Y Position')
-plt.show()
+plot_contour_field(Bx,'X Direction Leakage Magnetic Field')
+plot_contour_field(B_max,'Maximum Fusion Leakage Magnetic Field')
+plot_contour_field(B_sum,'Magnitude Fusion Leakage Magnetic Field')
 center = B_max.shape[0] // 2
 x = np.arange(B_max.shape[1])
 y_max = B_max[center,:]
